@@ -24,18 +24,26 @@ type Properties struct {
 	// Default is 10 connections per every available CPU as reported by runtime.GOMAXPROCS.
 	PoolSize int `default:"10"`
 
-	// Connection age at which client retires (closes) the connection.
-	// Default is to not close aged connections.
-	MaxConnAge time.Duration `default:"0"`
+	// ConnMaxLifetime is the maximum amount of time a connection may be reused.
+	//
+	// Expired connections may be closed lazily before reuse.
+	// If <= 0, connections are not closed due to a connection's age.
+	//
+	// Default is to not close idle connections.
+	ConnMaxLifetime time.Duration `default:"0"`
 
 	// Minimum number of idle connections which is useful when establishing
 	// new connection is slow.
 	MinIdleConns int `default:"2"`
 
-	// Amount of time after which client closes idle connections.
+	// ConnMaxIdleTime is the maximum amount of time a connection may be idle.
 	// Should be less than server's timeout.
-	// Default is 5 minutes. -1 disables idle timeout check.
-	IdleTimeout time.Duration `default:"5m"`
+	//
+	// Expired connections may be closed lazily before reuse.
+	// If d <= 0, connections are not closed due to a connection's idle time.
+	//
+	// Default is 30 minutes. -1 disables idle timeout check.
+	ConnMaxIdleTime time.Duration `default:"5m"`
 }
 
 func (p Properties) Prefix() string {

@@ -1,10 +1,12 @@
 package redis
 
 import (
+	"context"
 	"crypto/tls"
 	"fmt"
-	"github.com/go-redis/redis/v8"
 	"github.com/pkg/errors"
+	"github.com/redis/go-redis/v9"
+	"time"
 )
 
 func NewClient(props *Properties) (*redis.Client, error) {
@@ -18,24 +20,26 @@ func NewClient(props *Properties) (*redis.Client, error) {
 		return nil, errors.New("redis port is required")
 	}
 	config := &redis.Options{
-		Addr:         fmt.Sprintf("%s:%d", props.Host, props.Port),
-		Username:     props.Username,
-		Password:     props.Password,
-		DB:           props.Database,
-		PoolSize:     props.PoolSize,
-		MaxConnAge:   props.MaxConnAge,
-		MinIdleConns: props.MinIdleConns,
-		IdleTimeout:  props.IdleTimeout,
+		Addr:            fmt.Sprintf("%s:%d", props.Host, props.Port),
+		Username:        props.Username,
+		Password:        props.Password,
+		DB:              props.Database,
+		PoolSize:        props.PoolSize,
+		MinIdleConns:    props.MinIdleConns,
+		ConnMaxIdleTime: props.ConnMaxIdleTime,
+		ConnMaxLifetime: props.ConnMaxLifetime,
 	}
 	if props.EnableTLS {
 		config.TLSConfig = &tls.Config{
 			MinVersion: tls.VersionTLS12,
 		}
 	}
-	rdb := redis.NewClient(config)
-	_, err := rdb.Ping(rdb.Context()).Result()
+	client := redis.NewClient(config)
+	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
+	defer cancel()
+	_, err := client.Ping(ctx).Result()
 	if err != nil {
 		return nil, errors.WithMessage(err, "error when open redis connection")
 	}
-	return rdb, nil
+	return client, nil
 }

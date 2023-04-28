@@ -1,6 +1,6 @@
 package golibdataTestUtil
 
-import "github.com/go-redis/redis/v8"
+import "github.com/redis/go-redis/v9"
 
 var redisClient *redis.Client
 

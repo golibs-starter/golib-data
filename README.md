@@ -26,7 +26,7 @@ package main
 
 import (
     "database/sql"
-    red "github.com/go-redis/redis/v8"
+    "github.com/redis/go-redis/v9"
     "gitlab.com/golibs-starter/golib-data"
     "gitlab.com/golibs-starter/golib-data/testutil"
     "go.uber.org/fx"
@@ -57,7 +57,7 @@ func main() {
     )
 }
 
-func funcUseRedis(redisClient *red.Client) {
+func funcUseRedis(redisClient *redis.Client) {
     // do something with redis client
 }
 

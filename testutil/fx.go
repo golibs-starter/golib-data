@@ -1,7 +1,7 @@
 package golibdataTestUtil
 
 import (
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 	"go.uber.org/fx"
 	"gorm.io/gorm"
 )
