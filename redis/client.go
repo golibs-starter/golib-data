@@ -35,7 +35,7 @@ func NewClient(props *Properties) (*redis.Client, error) {
 		}
 	}
 	client := redis.NewClient(config)
-	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)
 	defer cancel()
 	_, err := client.Ping(ctx).Result()
 	if err != nil {
